@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 import express from "express";
 import connectdb from "./db.js";
-import {Blog} from "./model.js";
+import { Blog } from "./model.js";
+import mongoose from "mongoose";
 
 export const app = express();
 
@@ -28,7 +29,7 @@ app.get("/blogs", async (req, res) => {
   }
 });
 
-app.get("blogs/:id", async (req, res) => {
+app.get("/blogs/:id", async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).send("nhi milra blog vo wala");
@@ -38,7 +39,7 @@ app.get("blogs/:id", async (req, res) => {
   }
 });
 
-app.post("/articles", async (req, res) => {
+app.post("/blogs", async (req, res) => {
   try {
     const newblog = new Blog({
       title: req.body.title,
@@ -53,16 +54,21 @@ app.post("/articles", async (req, res) => {
   }
 });
 
-app.delete("/articles/:id", async (req, res) => {
+app.delete("/blogs/:id", async (req, res) => {
   try {
-    const deletedblog = await Blog.findByIdAndDelete(req.params.id);
+    console.log("Received ID:", req.params.id);
+    const deletedblog = await Blog.findByIdAndDelete(
+      new mongoose.Types.ObjectId(req.params.id)
+    );
+    
     if (!deletedblog) return res.status(404).send("blog nhi mila wo wala...");
   } catch (error) {
+    console.error("Error during deletion:", error);
     res.status(500).send("kuch to bhi hogya yaar nhi paya delete...");
   }
 });
 
-app.put("/articles/:id", async (req, res) => {
+app.put("/blogs/:id", async (req, res) => {
   try {
     const updatedblog = await Blog.findByIdAndUpdate(
       req.params.id,
