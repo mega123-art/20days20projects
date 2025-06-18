@@ -1,9 +1,9 @@
-import { User } from "../models/usermodel.js";
 import jwt from "jsonwebtoken";
+import { User } from "../models/usermodel.js";
 
-// Function to generate JWT
+// Helper function to generate JWT
 const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 // Register a new user
@@ -22,7 +22,6 @@ export const registerUser = async (req, res) => {
 
     // Generate JWT token
     const token = generateToken(user._id);
-    console.log("User registered:", user);
 
     res.status(201).json({
       message: "User registered successfully!",
@@ -30,7 +29,8 @@ export const registerUser = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("Error during registration:", error.message);
+    res.status(400).json({ error: "Failed to register user" });
   }
 };
 
@@ -46,14 +46,13 @@ export const loginUser = async (req, res) => {
     }
 
     // Compare passwords
-    // const isPasswordValid = await user.comparePassword(password);
-    // if (!isPasswordValid) {
-    //   return res.status(401).json({ message: "Invalid email or password" });
-    // }
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
 
     // Generate JWT token
     const token = generateToken(user._id);
-    console.log("User fetched by email:", user);
 
     res.status(200).json({
       message: "Login successful!",
@@ -61,19 +60,22 @@ export const loginUser = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("Error during login:", error.message);
+    res.status(400).json({ error: "Failed to login" });
   }
 };
 
-// Get user profile (optional endpoint)
+// Get user profile
 export const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user._id).select("-password");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
     res.status(200).json(user);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("Error fetching user profile:", error.message);
+    res.status(400).json({ error: "Failed to fetch user profile" });
   }
 };

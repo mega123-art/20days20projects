@@ -1,22 +1,32 @@
-import jwt, { decode } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { User } from "../models/usermodel.js";
+import mongoose from "mongoose";
 
-export const authmiddleware = async (req, res,next) => {
+export const authmiddleware = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      return res.status(401).json("no token provided.....");
+      console.log("No token provided");
+      return res.status(401).json({ message: "No token provided" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId=decoded.userId
-    const user=await User.findById(req.userId)
-    if(!user){
-        return res.status(404).json("user not found")
+    console.log("Decoded token payload:", decoded);
+
+    // Use consistent payload key (userId)
+    const userId = decoded.userId || decoded.id;
+    const user = await User.findById(new mongoose.Types.ObjectId(userId));
+    console.log("User fetched by ID:", user);
+
+    if (!user) {
+      console.log("User not found in database");
+      return res.status(404).json({ message: "User not found" });
     }
-    req.user=user
-    next()
+
+    req.user = user;
+    next();
   } catch (error) {
-    res.status(401).json("invalid token")
+    console.error("Error in middleware:", error.message);
+    res.status(401).json({ message: "Invalid token" });
   }
 };

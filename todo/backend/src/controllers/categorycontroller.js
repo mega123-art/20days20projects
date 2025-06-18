@@ -2,7 +2,7 @@ import { Category } from "../models/categorymodel.js";
 export const createcategory = async (req, res) => {
   try {
     const { name } = req.body;
-    const category = await Category.create({ name, user: req.userId });
+    const category = await Category.create({ name, user: req.user._id });
     res.status(201).json({ category });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -11,7 +11,7 @@ export const createcategory = async (req, res) => {
 
 export const getcategories = async (req, res) => {
   try {
-    const categories = await Category.find({ user: req.userId });
+    const categories = await Category.find({ user: req.user._id });
     res.json({ categories });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -49,7 +49,7 @@ export const deleteCategory = async (req, res) => {
     // Find the category and delete it
     const category = await Category.findOneAndDelete({
       _id: id,
-      user: req.userId,
+      user: req.user._id,
     });
 
     if (!category) {
