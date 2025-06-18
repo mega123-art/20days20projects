@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Blog</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Blogger</h1>
+        <button id="newBlogBtn">New Blog</button>
+    </header>
+
+    <main>
+        <div id="blogList"></div>
+        
+        <div id="blogForm" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="formTitle">Create New Blog</h2>
+                <input type="text" id="titleInput" placeholder="Blog Title">
+                <textarea id="contentInput" placeholder="Blog Content"></textarea>
+                <input type="text" id="tagsInput" placeholder="Tags (comma-separated)">
+                <div class="button-group">
+                    <button id="submitBlog">Save</button>
+                    <button id="cancelBlog">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="root"></div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

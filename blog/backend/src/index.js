@@ -3,12 +3,19 @@ import express from "express";
 import connectdb from "./db.js";
 import { Blog } from "./model.js";
 import mongoose from "mongoose";
-
+import cors from "cors"
 export const app = express();
 
 const PORT = 3000;
 dotenv.config();
-
+app.use(
+  cors({
+    origin: "http://127.0.0.1:5173", // Replace with your frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
+  })
+);
 // Middleware to parse JSON
 app.use(express.json());
 connectdb()
