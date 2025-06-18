@@ -4,10 +4,10 @@ import {
   getTasks,
   updateTask,
   deleteTask
-} from "../controllers/taskcontroller";
-import { authmiddleware } from "../middleware/authmiddleware";
+} from "../controllers/taskcontroller.js";
+import { authmiddleware } from "../middleware/authmiddleware.js";
 
-export const router = express.Router();
+const router = express.Router();
 
 router.post("/", authmiddleware, createTask);
 
@@ -16,3 +16,4 @@ router.put("/:id",authmiddleware,updateTask)
 router.delete("/:id",authmiddleware,deleteTask)
 
 
+export default router

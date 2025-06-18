@@ -1,4 +1,4 @@
-import { User } from "../models/usermodel";
+import { User } from "../models/usermodel.js";
 import jwt from "jsonwebtoken";
 
 // Function to generate JWT

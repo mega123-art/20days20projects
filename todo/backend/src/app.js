@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import connectdb from "./config/db";
+import connectdb from "./config/db.js";
 
 import authroutes from "./routes/authroutes.js";
 import categoryroutes from "./routes/categoryroutes.js";
