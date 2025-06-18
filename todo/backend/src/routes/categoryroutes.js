@@ -8,8 +8,9 @@ import {
 
 import { authmiddleware } from "../middleware/authmiddleware";
 
-export const router = express.Router();
-router.post("/",authmiddleware,createcategory)
-router.get("/",authmiddleware,getcategories)
-router.put("/:id",authmiddleware,updatecategory)
-router.delete("/:id",authmiddleware,deleteCategory)
+const router = express.Router();
+router.post("/", authmiddleware, createcategory);
+router.get("/", authmiddleware, getcategories);
+router.put("/:id", authmiddleware, updatecategory);
+router.delete("/:id", authmiddleware, deleteCategory);
+export default router

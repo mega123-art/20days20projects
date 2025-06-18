@@ -5,10 +5,9 @@ import {
   getUserProfile,
 } from "../controllers/authcontroller";
 import { authmiddleware } from "../middleware/authmiddleware";
-
-export const router = express.Router();
+const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/profile",authmiddleware,getUserProfile)
-
+router.get("/profile", authmiddleware, getUserProfile);
+export default router

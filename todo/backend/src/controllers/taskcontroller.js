@@ -1,6 +1,5 @@
 import { Task } from "../models/taskmodel.js";
 
-
 export const createTask = async (req, res) => {
   try {
     const { description, status, dueDate, category, priority } = req.body;
@@ -51,3 +50,5 @@ export const deleteTask = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
