@@ -1,5 +1,5 @@
 import axios from "axios";
-import redisclient from "./redisclient";
+import redisclient from "./redisclient.js";
 
 const { WEATHER_API_KEY, WEATHER_API_BASE_URL, CACHE_EXPIRY } = process.env;
 
