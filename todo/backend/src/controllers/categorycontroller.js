@@ -11,7 +11,11 @@ export const createcategory = async (req, res) => {
 
 export const getcategories = async (req, res) => {
   try {
-    const categories = await Category.find({ user: req.user._id });
+    const categories = await Category.find({ user: req.user._id }).populate({
+        path:"tasks",
+        model:"Task",
+        match:{user:req.user._id}
+    })
     res.json({ categories });
   } catch (error) {
     res.status(500).json({ error: error.message });

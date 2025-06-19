@@ -9,7 +9,7 @@ export const createTask = async (req, res) => {
       dueDate,
       category,
       priority,
-      user: req.userId,
+      user: req.user._id,
     });
     res.status(201).json({ task });
   } catch (error) {
