@@ -20,7 +20,7 @@ export const createTask = async (req, res) => {
 export const getTasks = async (req, res) => {
   try {
     const { status, category } = req.query;
-    const filter = { user: req.userId };
+    const filter = { user: req.user._id };
     if (status) filter.status = status;
     if (category) filter.category = category;
     const tasks = await Task.find(filter).populate("category");
