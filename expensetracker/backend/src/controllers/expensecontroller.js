@@ -29,3 +29,43 @@ export const getExpenses = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+export const updateExpense = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    const expense = await Expense.findOneAndUpdate(
+      { _id: id, userId: req.user._id },
+      updates,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    if (!expense) {
+      return res
+        .status(404)
+        .json({ error: "Expense not found or not authorized" });
+    }
+
+    res.json(expense);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+export const deleteExpense=async(req,res)=>{
+    try {
+        const{id}=req.params
+        const expense=await Expense.findOneAndDelete({_id:id,userId:req.user._id})
+
+        if(!expense){
+            return res.status(404).json({error:'expense not found or unauth'})
+        }
+        res.json({message:'expense deleted successfully...yeah'})
+    } catch (error) {
+        res.status(400).json({error:error.message})
+        
+    }
+}
