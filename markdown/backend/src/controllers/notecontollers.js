@@ -30,22 +30,80 @@ export const rendernote = async (req, res) => {
 export const grammarcheck = async (req, res) => {
   try {
     const { content } = req.body;
-    if(!content) {return res.status(400).json({erro:"content is required for grammar check"})}
-    const apiURL="https://api.languagetool.org/v2/check"
-    const params={
-      text:content,
-      language:"en-US"
+    if (!content) {
+      return res
+        .status(400)
+        .json({ erro: "content is required for grammar check" });
     }
-    const response =await axios.post(apiURL,null,{params})
-    const matches=response.data.map((match)=>({
-      message:match.message,
+    const apiURL = "https://api.languagetool.org/v2/check";
+    const params = {
+      text: content,
+      language: "en-US",
+    };
+    const response = await axios.post(apiURL, null, { params });
+    const matches = response.data.map((match) => ({
+      message: match.message,
       shortMessage: match.shortMessage,
       offset: match.offset,
       length: match.length,
-      replacements: match.replacements.map((r) => r.value)
+      replacements: match.replacements.map((r) => r.value),
+    }));
+    res.status(200).json({ content, errors: matches });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-    }))
-    res.status(200).json({ content, errors:matches });
+export const getnotes = async (req, res) => {
+  try {
+    const notes = await Note.find();
+    res.status(201).json(notes);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getnotebyid = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const note = await Note.findById(id);
+    if (!note) {
+      return res.status(404).json({ error: "Note not found." });
+    }
+    res.status(200).json(note);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const updateNote = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, content } = req.body;
+
+    const updatedNote = await Note.findByIdAndUpdate(
+      id,
+      { title, content, htmlcontent: marked(content) },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedNote) {
+      return res.status(404).json({ error: "Note not found." });
+    }
+    res.status(200).json(updatedNote);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+export const deleteNote = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedNote = await Note.findByIdAndDelete(id);
+    if (!deletedNote) {
+      return res.status(404).json({ error: "Note not found." });
+    }
+    res.status(200).json({ message: "Note deleted successfully." });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
