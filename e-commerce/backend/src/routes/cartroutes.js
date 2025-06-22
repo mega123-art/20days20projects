@@ -15,3 +15,4 @@ router.post("/", protect, addItemToCart);
 
 router.put("/", protect, updateCartItem);
 router.delete("/", protect, removeItemFromCart);
+export default router
