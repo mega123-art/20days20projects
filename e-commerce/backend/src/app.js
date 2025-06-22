@@ -6,6 +6,7 @@ import authRoutes from "./routes/authroutes.js";
 import productRoutes from "./routes/productroutes.js";
 import cartRoutes from "./routes/cartroutes.js";
 import paymentRoutes from "./routes/paymentroutes.js";
+import orderRoutes from "./routes/orderroutes.js";
 
 dotenv.config(); // Load .env variables
 
@@ -21,3 +22,4 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/orders", orderRoutes);
