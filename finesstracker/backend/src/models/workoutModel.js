@@ -8,6 +8,7 @@ const exerciseSchema = new mongoose.Schema(
     duration: {
       type: Number, // Duration in minutes
       required: true,
+      min: [1, "duration must be at least 1 minute"],
     },
     notes: {
       type: String,
@@ -26,15 +27,20 @@ const workoutSchema = new mongoose.Schema(
     date: {
       type: Date,
       required: true,
+      default: Date.now,
     },
     exercises: [exerciseSchema], // Embedded exercises
     completed: {
       type: Boolean,
       default: false,
     },
+    comments: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
   }
 );
-export const Workout=mongoose.model("Workout",workoutSchema)
+export const Workout = mongoose.model("Workout", workoutSchema);

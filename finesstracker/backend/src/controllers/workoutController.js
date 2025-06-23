@@ -71,3 +71,56 @@ export const deleteWorkout = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+export const addWorkoutComment = async (req, res) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+
+  try {
+    const workout = await Workout.findById(id);
+
+    if (!workout) {
+      return res.status(404).json({ message: "Workout not found" });
+    }
+
+    if (workout.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    workout.comments = comment || workout.comments;
+    const updatedWorkout = await workout.save();
+
+    res.status(200).json(updatedWorkout);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateExerciseNotes = async (req, res) => {
+  const { id, exerciseIndex } = req.params;
+  const { notes } = req.body;
+
+  try {
+    const workout = await Workout.findById(id);
+
+    if (!workout) {
+      return res.status(404).json({ message: "Workout not found" });
+    }
+
+    if (workout.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    if (!workout.exercises[exerciseIndex]) {
+      return res
+        .status(404)
+        .json({ message: "Exercise not found in the workout" });
+    }
+
+    workout.exercises[exerciseIndex].notes = notes || "";
+    const updatedWorkout = await workout.save();
+
+    res.status(200).json(updatedWorkout);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
