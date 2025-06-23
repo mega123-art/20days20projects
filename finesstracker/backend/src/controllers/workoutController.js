@@ -124,3 +124,26 @@ export const updateExerciseNotes = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const toggleFavoriteWorkout = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const workout = await Workout.findById(id);
+
+    if (!workout) {
+      return res.status(404).json({ message: "Workout not found" });
+    }
+
+    if (workout.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    workout.favorite = !workout.favorite; // Toggle the favorite status
+    const updatedWorkout = await workout.save();
+
+    res.status(200).json(updatedWorkout);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

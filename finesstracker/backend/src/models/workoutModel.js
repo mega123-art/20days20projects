@@ -38,6 +38,10 @@ const workoutSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
