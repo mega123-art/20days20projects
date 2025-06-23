@@ -1,5 +1,5 @@
-import { Workout } from "../models/workoutModel.js"
-;
+import { Workout } from "../models/workoutModel.js";
+import { scheduleNotification } from "../services/notificationService.js";
 export const createWorkout = async (req, res) => {
   const { date, exercises } = req.body;
 
@@ -9,6 +9,7 @@ export const createWorkout = async (req, res) => {
       date,
       exercises,
     });
+    await scheduleNotification(workout._id);
 
     res.status(201).json(workout);
   } catch (error) {
@@ -43,8 +44,10 @@ export const updateWorkout = async (req, res) => {
     workout.date = date || workout.date;
     workout.exercises = exercises || workout.exercises;
     workout.completed = completed !== undefined ? completed : workout.completed;
+    workout.notified = false;
 
     const updatedWorkout = await workout.save();
+    await scheduleNotification(updatedWorkout._id);
     res.status(200).json(updatedWorkout);
   } catch (error) {
     res.status(500).json({ message: error.message });

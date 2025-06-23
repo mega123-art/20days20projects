@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const exerciseSchema = new mongoose.Schema(
   {
     name: {
@@ -39,6 +40,10 @@ const workoutSchema = new mongoose.Schema(
       default: "",
     },
     favorite: {
+      type: Boolean,
+      default: false,
+    },
+    notified: {
       type: Boolean,
       default: false,
     },
