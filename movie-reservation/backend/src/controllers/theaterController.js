@@ -19,3 +19,27 @@ export const getTheaters = async (req, res) => {
     res.status(500).json({ message: "Error fetching theaters", error });
   }
 };
+
+export const addScreenToTheater = async (req, res) => {
+  const { theaterId } = req.params;
+  const { name, totalSeats, seatLayout } = req.body;
+
+  try {
+    const theater = await Theater.findById(theaterId);
+    if (!theater) return res.status(404).json({ message: "Theater not found" });
+
+    const screen = await Screen.create({
+      name,
+      theaterId,
+      totalSeats,
+      seatLayout,
+    });
+
+    theater.screens.push(screen._id);
+    await theater.save();
+
+    res.status(201).json(screen);
+  } catch (error) {
+    res.status(500).json({ message: "Error adding screen", error });
+  }
+};
