@@ -13,6 +13,7 @@ const reservationSchema = new mongoose.Schema({
     enum: ["Pending", "Completed"],
     default: "Pending",
   },
+  totalAmount: { type: Number, required: true },
 });
 
-export const Reservation= mongoose.model("Reservation", reservationSchema);
+export const Reservation = mongoose.model("Reservation", reservationSchema);

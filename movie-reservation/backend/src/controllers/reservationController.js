@@ -1,5 +1,6 @@
 import { Schedule } from "../models/scheduleModel.js";
 import { Reservation } from "../models/reservationModel.js";
+import { io } from "../app.js";
 
 export const createReservation = async (req, res) => {
   const { scheduleId, userId, seats } = req.body;
@@ -48,9 +49,27 @@ export const createReservation = async (req, res) => {
       seats,
       paymentStatus: "Pending", // Set to Pending until payment is confirmed
     });
+    io.to(scheduleId).emit("seatUpdate", {
+      scheduleId,
+      updatedSeats: showtime.seats,
+    });
 
     res.status(201).json({ message: "Reservation created", reservation });
   } catch (error) {
     res.status(500).json({ message: "Error creating reservation", error });
+  }
+};
+export const getUserReservations = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const reservations = await Reservation.find({ userId }).populate({
+      path: "scheduleId",
+      populate: { path: "movieId screenId" }, // Populate movie and screen details
+    });
+
+    res.status(200).json(reservations);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching reservations", error });
   }
 };
