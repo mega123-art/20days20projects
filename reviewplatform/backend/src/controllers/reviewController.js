@@ -1,5 +1,6 @@
 import Review from "../models/review.js";
 import { analyzeSentiment } from "../services/nlpService.js";
+import { updateLeaderboard } from "../services/leaderboardService.js";
 export const createReview = async (req, res) => {
   try {
     const { restaurantId, user, comment } = req.body;
@@ -7,6 +8,8 @@ export const createReview = async (req, res) => {
 
     const review = new Review({ restaurantId, user, comment, sentimentScore });
     await review.save();
+
+    await updateLeaderboard(restaurantId,sentimentScore)
 
     res.status(201).json({ message: "Review submitted", review });
   } catch (error) {
