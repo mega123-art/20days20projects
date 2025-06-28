@@ -1,0 +1,23 @@
+[
+  {
+    "_id": "68532d0f3e32d2274100bd4a",
+    "name": "Work",
+    "user": "68531f53bca7755f2b7b2f3e",
+    "tasks": [],
+    "__v": 0
+  },
+  {
+    "_id": "6853e5df26ef2ddccac474c3",
+    "name": "Work",
+    "user": "6852eaec6fa8b5f89da66030",
+    "tasks": [],
+    "__v": 0
+  },
+  {
+    "_id": "6853e73e67dea38c6c4dae94",
+    "name": "Work",
+    "user": "6852eaec6fa8b5f89da66030",
+    "tasks": [],
+    "__v": 0
+  }
+]
