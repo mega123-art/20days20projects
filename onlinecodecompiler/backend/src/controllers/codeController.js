@@ -5,7 +5,7 @@ import {
   getTask,
   deleteTask,
 } from "../status/status.js";
-
+import { io } from "../index.js";
 export const executeCode = async (req, res) => {
   const { sourceCode } = req.body;
 
@@ -14,6 +14,12 @@ export const executeCode = async (req, res) => {
   }
 
   const taskId = createTask({ linesOfCode: sourceCode.split("\n").length });
+  const emitTaskUpdate = (taskId) => {
+    const task = getTask(taskId);
+    if (task) {
+      io.emit("taskUpdate", { taskId, ...task });
+    }
+  };
 
   runcode(sourceCode)
     .then((result) => {
@@ -22,6 +28,7 @@ export const executeCode = async (req, res) => {
         output: result,
         endTime: Date.now(),
       });
+      emitTaskUpdate(taskId)
     })
     .catch((error) => {
       updateTask(taskId, {
@@ -29,6 +36,7 @@ export const executeCode = async (req, res) => {
         error: error.message,
         endTime: Date.now(),
       });
+      emitTaskUpdate(taskId);
     })
     .finally(() => {
       setTimeout(() => deleteTask(taskId), 60000);
@@ -36,13 +44,13 @@ export const executeCode = async (req, res) => {
 
   res.status(202).json({ status: "submitted", taskId });
 };
-export const getTaskStatus=(req,res)=>{
-    const { taskId } = req.params;
+export const getTaskStatus = (req, res) => {
+  const { taskId } = req.params;
 
-    const task = getTask(taskId);
-    if (!task) {
-      return res.status(404).json({ error: "Task not found" });
-    }
+  const task = getTask(taskId);
+  if (!task) {
+    return res.status(404).json({ error: "Task not found" });
+  }
 
-    res.status(200).json(task);
-}
+  res.status(200).json(task);
+};
