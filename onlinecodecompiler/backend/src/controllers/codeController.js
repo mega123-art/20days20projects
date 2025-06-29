@@ -1,4 +1,11 @@
 import { runcode } from "../sandbox/sandbox.js";
+import {
+  createTask,
+  updateTask,
+  getTask,
+  deleteTask,
+} from "../status/status.js";
+
 export const executeCode = async (req, res) => {
   const { sourceCode } = req.body;
 
@@ -6,11 +13,36 @@ export const executeCode = async (req, res) => {
     return res.status(400).json({ error: "Invalid source code" });
   }
 
-  try {
-    const result = await runcode(sourceCode);
+  const taskId = createTask({ linesOfCode: sourceCode.split("\n").length });
 
-    return res.status(200).json({ status: "success", output: result });
-  } catch (error) {
-    return res.status(500).json({ status: "error", message: error.message });
-  }
+  runcode(sourceCode)
+    .then((result) => {
+      updateTask(taskId, {
+        status: "completed",
+        output: result,
+        endTime: Date.now(),
+      });
+    })
+    .catch((error) => {
+      updateTask(taskId, {
+        status: "failed",
+        error: error.message,
+        endTime: Date.now(),
+      });
+    })
+    .finally(() => {
+      setTimeout(() => deleteTask(taskId), 60000);
+    });
+
+  res.status(202).json({ status: "submitted", taskId });
 };
+export const getTaskStatus=(req,res)=>{
+    const { taskId } = req.params;
+
+    const task = getTask(taskId);
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    res.status(200).json(task);
+}
