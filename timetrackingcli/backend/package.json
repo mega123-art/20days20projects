@@ -9,5 +9,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "module",
+  "dependencies": {
+    "commander": "^14.0.0",
+    "dayjs": "^1.11.13",
+    "mongodb": "^6.17.0"
+  }
 }
