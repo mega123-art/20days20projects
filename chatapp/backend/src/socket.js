@@ -1,4 +1,5 @@
 import { User } from "./models/user.js";
+import { Message } from "./models/message.js";
 const sockethandler = (io) => {
   io.on("connection", (socket) => {
     console.log("A user connected");
@@ -25,7 +26,34 @@ const sockethandler = (io) => {
     socket.on("send-message", ({ sender, receiver, content }) => {
       io.to(receiver).emit("receive-message", { sender, content });
     });
+    socket.on("typing", ({ senderId, receiverId }) => {
+      io.to(receiverId).emit("typing", { senderId });
+    });
 
+    socket.on("send-message", async ({ senderId, receiverId, content }) => {
+      try {
+        // Save the message to the database
+        const message = await Message.create({
+          sender: senderId,
+          receiver: receiverId,
+          content,
+        });
+
+        
+        io.to(receiverId).emit("receive-message", {
+          senderId,
+          receiverId,
+          content,
+          timestamp: message.timestamp,
+        });
+      } catch (error) {
+        console.error("Error saving or broadcasting message:", error);
+      }
+    });
+
+    socket.on("stop-typing", ({ senderId, receiverId }) => {
+      io.to(receiverId).emit("stop-typing", { senderId });
+    });
     // Handle disconnect
     socket.on("disconnect", async () => {
       try {
