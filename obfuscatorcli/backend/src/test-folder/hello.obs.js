@@ -1,0 +1,1 @@
+function _v0(name) { console.log('Hello ' + name); } greet('Alice');

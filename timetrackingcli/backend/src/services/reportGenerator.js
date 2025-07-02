@@ -3,7 +3,12 @@ import { connnectdb } from "../db/db.js";
 
 export const generateReport = async (projectName, since, until) => {
   const db = await getDatabase();
-
+  if (since && !dayjs(since).isValid()) {
+    throw new Error("Invalid 'since' date format.");
+  }
+  if (until && !dayjs(until).isValid()) {
+    throw new Error("Invalid 'until' date format.");
+  }
   const query = { projectName };
   if (since) {
     query.startTime = { $gte: dayjs(since).toISOString() };
