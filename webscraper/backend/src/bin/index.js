@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import readline from "readline";
-import { initBrowser, closeBrowser } from "../src/browser.js";
-import { parse } from "../src/parser.js";
+import { initBrowser, closeBrowser } from "../browser.js";
+import { parse } from "../parser.js";
 
 (async () => {
   await initBrowser();
